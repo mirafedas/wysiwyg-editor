@@ -1,0 +1,70 @@
+@import './normalize.scss';
+@import './vars.scss';
+
+html {
+  font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 16px;
+  word-spacing: 1px;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+  height: 100%;
+}
+
+html,
+body,
+#__nuxt,
+#__layout,
+.container {
+  height: 100%;
+  min-height: 100vh;
+}
+
+#__layout {
+  display: flex;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.default-btn {
+  padding: 10px;
+  background-color: $main-color;
+  border: 1px solid $main-color;
+  border-radius: 5px;
+  font-size: 18px;
+  text-transform: uppercase;
+  color: white;
+
+  &:hover {
+    background-color: $accent-color;
+    border-color: $accent-color;
+  }
+}
+
+.cancel-btn {
+  padding: 10px;
+  background-color: $cancel-color;
+  border: 1px solid $cancel-color;
+  border-radius: 5px;
+  font-size: 18px;
+  text-transform: uppercase;
+  color: white;
+
+  &:hover {
+    background-color: $accent-color2;
+    border-color: $accent-color2;
+  }
+}
+
+.btn-wrapper {
+  display: flex;
+  justify-content: space-between;
+}
