@@ -1,32 +1,9 @@
 <template>
   <main>
-    <div class="btn-wrapper">
-      <button class="default-btn" type="submit" @click="add">
-        Add text
-      </button>
-      <nuxt-link :to="{ name: 'result' }" class="link">
-        View JSON
-      </nuxt-link>
-    </div>
-    <div class="main-wrapper">
-      <span
-        v-for="item in texts"
-        :key="item.id"
-        :style="{
-          color: item.color,
-          fontSize: item.fontSize,
-          backgroundColor: item.backgroundColor
-        }"
-        @click="select(item.id)"
-      >
-        {{ item.text }}
-        <br v-if="item.linebreak" />
-      </span>
-      <TextSettings
-        v-if="showInput"
-        :selected="selected"
-        @hide="hideSettings"
-      />
+    <div class="wrapper">
+      <TextSettings :selected-text="selectedText" @create="createNode" />
+      <div ref="textarea" class="main-wrapper" contenteditable="true"></div>
+      <pre class="main-wrapper">{{ texts }}</pre>
     </div>
   </main>
 </template>
@@ -41,32 +18,44 @@ export default {
   },
   data: () => {
     return {
-      selected: {},
-      showInput: false
+      selectedText: '',
+      rangeStart: '',
+      rangeEnd: '',
+      results: []
     }
   },
   computed: {
     ...mapState(['texts'])
   },
-  methods: {
-    ...mapMutations(['saveText']),
-    select(selectedID) {
-      this.selected = this.texts.find((el) => el.id === selectedID)
-      this.showInput = true
-    },
-    add() {
-      const uniqueID = Math.floor(Math.random() * 11) + Date.now()
-      const newEmptyText = {
-        id: uniqueID,
-        text: 'click me to edit',
-        color: 'black',
-        backgroundColor: 'white',
-        fontSize: '16px'
+  mounted() {
+    document.addEventListener('mouseup', (event) => {
+      if (event.target === this.$refs.textarea) {
+        this.getSelectedText()
       }
-      this.saveText(newEmptyText)
+    })
+  },
+  methods: {
+    ...mapMutations(['saveInJSON']),
+    getSelectedText() {
+      const selectedTextObj = window.getSelection()
+      const selectedTextWithReference = selectedTextObj.toString()
+      const selectedText = JSON.parse(JSON.stringify(selectedTextWithReference))
+
+      if (selectedText) {
+        const { anchorOffset, focusOffset } = selectedTextObj
+        this.selectedText = selectedText
+        this.rangeStart = focusOffset
+        this.rangeEnd = anchorOffset
+      }
     },
-    hideSettings() {
-      this.showInput = false
+    createNode(newData) {
+      console.log('innerHTML', this.$refs.textarea.innerHTML)
+      const newNode = `<span contenteditable="false" style="color: ${newData.color}; font-size: ${newData.fontSize}px; background-color: ${newData.backgroundColor}";>${newData.text}</span>`
+      // replace the string with textContent
+      this.$refs.textarea.innerHTML = newNode
+      this.results.push(newData)
+      this.saveInJSON(newData)
+      this.selectedText = ''
     }
   }
 }
@@ -95,5 +84,12 @@ main {
   width: 100%;
   max-width: 300px;
   padding: 10px 0;
+}
+
+.wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: center;
 }
 </style>
