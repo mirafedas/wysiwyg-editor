@@ -21,6 +21,7 @@ export default {
       selectedText: '',
       rangeStart: '',
       rangeEnd: '',
+      range: {},
       results: []
     }
   },
@@ -29,7 +30,10 @@ export default {
   },
   mounted() {
     document.addEventListener('mouseup', (event) => {
-      if (event.target === this.$refs.textarea) {
+      if (
+        event.target === this.$refs.textarea ||
+        event.target.classList.contains('text')
+      ) {
         this.getSelectedText()
       }
     })
@@ -37,22 +41,33 @@ export default {
   methods: {
     ...mapMutations(['saveInJSON']),
     getSelectedText() {
-      const selectedTextObj = window.getSelection()
-      const selectedTextWithReference = selectedTextObj.toString()
+      const selectedTextWithReference = window.getSelection().toString()
       const selectedText = JSON.parse(JSON.stringify(selectedTextWithReference))
 
       if (selectedText) {
-        const { anchorOffset, focusOffset } = selectedTextObj
+        console.log('selectedText', selectedText)
+        const range = window.getSelection().getRangeAt(0)
+        this.range = range
         this.selectedText = selectedText
-        this.rangeStart = focusOffset
-        this.rangeEnd = anchorOffset
+        this.rangeStart = range.startOffset
+        this.rangeEnd = range.endOffset
       }
     },
     createNode(newData) {
+      const span = document.createElement('span')
+      span.setAttribute('class', 'text')
+      span.setAttribute('contenteditable', false)
+      span.setAttribute(
+        'style',
+        `color: ${newData.color};
+        font-size: ${newData.fontSize}px;
+        background-color: ${newData.backgroundColor}`
+      )
+      span.textContent = newData.text
+      this.range.deleteContents()
+      this.range.insertNode(span)
+      console.log('textContent', this.$refs.textarea.textContent)
       console.log('innerHTML', this.$refs.textarea.innerHTML)
-      const newNode = `<span contenteditable="false" style="color: ${newData.color}; font-size: ${newData.fontSize}px; background-color: ${newData.backgroundColor}";>${newData.text}</span>`
-      // replace the string with textContent
-      this.$refs.textarea.innerHTML = newNode
       this.results.push(newData)
       this.saveInJSON(newData)
       this.selectedText = ''
