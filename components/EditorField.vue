@@ -37,6 +37,12 @@ export default {
         this.getSelectedText()
       }
     })
+    // document.addEventListener('keydown', (event) => {
+    //   if (event.key === 'Enter' && event.target === this.$refs.textarea) {
+    //     console.log('enter')
+    //     // Do more work
+    //   }
+    // })
   },
   methods: {
     ...mapMutations(['saveInJSON']),
@@ -54,7 +60,6 @@ export default {
       }
     },
     createNode(newData) {
-      const rangeText = this.range.toString()
       const span = document.createElement('span')
       span.setAttribute('class', 'text')
       span.setAttribute(
@@ -64,8 +69,12 @@ export default {
         background-color: ${newData.backgroundColor}`
       )
       span.textContent = newData.text
-      // check if range belongs to different spans. If yes, close prev and next span and create a new span
-      if (rangeText !== '[object Object]') {
+      this.insertNode(span)
+    },
+    insertNode(span) {
+      const rangeText = this.range.toString()
+      console.log('rangeText', rangeText)
+      if (rangeText !== '[object Object]' && rangeText) {
         this.range.deleteContents()
         this.range.insertNode(span)
         console.log('textContent', this.$refs.textarea.textContent)
@@ -74,14 +83,19 @@ export default {
           'innerHTML includes',
           this.$refs.textarea.innerHTML.includes('<pre')
         )
-        this.results.push(newData)
-        this.saveInJSON(newData)
         this.selectedText = ''
       } else {
+        console.log('this.range', this.range)
+        console.log('rangeText', rangeText)
         console.error(
           'Please select a range once more, but with double click or moving from left to right'
         )
       }
+      this.updateJSON()
+    },
+    updateJSON() {
+      // this.results.push(newData)
+      // this.saveInJSON(newData)
     }
   }
 }
