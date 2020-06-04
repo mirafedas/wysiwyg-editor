@@ -24,9 +24,9 @@ export default {
   },
   data: () => {
     return {
-      newColor: '',
-      bgColor: '',
-      newFontSize: ''
+      newColor: 'red',
+      bgColor: 'black',
+      newFontSize: '20'
     }
   },
   methods: {

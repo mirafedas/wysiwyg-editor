@@ -45,7 +45,7 @@ export default {
       const selectedText = JSON.parse(JSON.stringify(selectedTextWithReference))
 
       if (selectedText) {
-        console.log('selectedText', selectedText)
+        // console.log('selectedText', selectedText)
         const range = window.getSelection().getRangeAt(0)
         this.range = range
         this.selectedText = selectedText
@@ -54,9 +54,9 @@ export default {
       }
     },
     createNode(newData) {
+      const rangeText = this.range.toString()
       const span = document.createElement('span')
       span.setAttribute('class', 'text')
-      span.setAttribute('contenteditable', false)
       span.setAttribute(
         'style',
         `color: ${newData.color};
@@ -64,13 +64,24 @@ export default {
         background-color: ${newData.backgroundColor}`
       )
       span.textContent = newData.text
-      this.range.deleteContents()
-      this.range.insertNode(span)
-      console.log('textContent', this.$refs.textarea.textContent)
-      console.log('innerHTML', this.$refs.textarea.innerHTML)
-      this.results.push(newData)
-      this.saveInJSON(newData)
-      this.selectedText = ''
+      // check if range belongs to different spans. If yes, close prev and next span and create a new span
+      if (rangeText !== '[object Object]') {
+        this.range.deleteContents()
+        this.range.insertNode(span)
+        console.log('textContent', this.$refs.textarea.textContent)
+        console.log('innerHTML', this.$refs.textarea.innerHTML)
+        console.log(
+          'innerHTML includes',
+          this.$refs.textarea.innerHTML.includes('<pre')
+        )
+        this.results.push(newData)
+        this.saveInJSON(newData)
+        this.selectedText = ''
+      } else {
+        console.error(
+          'Please select a range once more, but with double click or moving from left to right'
+        )
+      }
     }
   }
 }
@@ -91,6 +102,10 @@ main {
   padding: 10px;
   margin: 10px;
   border: 1px solid grey;
+}
+
+.main-wrapper > pre {
+  width: fit-content;
 }
 
 .btn-wrapper {
