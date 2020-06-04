@@ -13,6 +13,7 @@ header {
   padding: 30px 10px;
   background-color: $main-color;
   text-transform: uppercase;
+  text-align: center;
   color: white;
 }
 </style>

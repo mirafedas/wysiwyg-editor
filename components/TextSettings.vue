@@ -1,45 +1,58 @@
 <template>
   <form>
-    <span><b>Selected:</b> {{ selectedText }}</span>
-    <br />
-    <label for="color">Color:</label>
-    <input v-model="newColor" type="text" placeholder="color" />
-    <label for="font">Font size:</label>
-    <input v-model="newFontSize" type="text" placeholder="font size" />
-    <label for="background">Background color:</label>
-    <input v-model="bgColor" type="text" placeholder="background color" />
-    <button class="default-btn" @click.prevent="save">
-      Save
-    </button>
+    <fieldset>
+      <label for="color">Color:</label>
+      <select id="color" v-model="color" @change="$emit('changeColor', color)">
+        <option>black</option>
+        <option>white</option>
+        <option>yellow</option>
+        <option>orange</option>
+        <option>red</option>
+        <option>blue</option>
+        <option>green</option>
+        <option>violet</option>
+      </select>
+      <label for="fontSize">Font size:</label>
+      <select
+        id="fontSize"
+        v-model="fontSize"
+        @change="$emit('changeFontSize', fontSize)"
+      >
+        <option>1</option>
+        <option>2</option>
+        <option>3</option>
+        <option>4</option>
+        <option>5</option>
+        <option>6</option>
+        <option>7</option>
+        <option>8</option>
+      </select>
+      <label for="bgColor">Background color:</label>
+      <select
+        id="bgColor"
+        v-model="bgColor"
+        @change="$emit('changeBgColor', bgColor)"
+      >
+        <option>white</option>
+        <option>black</option>
+        <option>yellow</option>
+        <option>orange</option>
+        <option>red</option>
+        <option>blue</option>
+        <option>green</option>
+        <option>violet</option>
+      </select>
+    </fieldset>
   </form>
 </template>
 
 <script>
 export default {
-  props: {
-    selectedText: {
-      type: String,
-      required: true
-    }
-  },
   data: () => {
     return {
-      newColor: 'red',
-      bgColor: 'black',
-      newFontSize: '20'
-    }
-  },
-  methods: {
-    save() {
-      const uniqueID = Math.floor(Math.random() * 11) + Date.now()
-      const newData = {
-        id: uniqueID,
-        text: this.selectedText,
-        color: this.newColor,
-        backgroundColor: this.bgColor,
-        fontSize: this.newFontSize
-      }
-      this.$emit('create', newData)
+      color: 'black',
+      fontSize: 4,
+      bgColor: 'white'
     }
   }
 }
@@ -47,18 +60,21 @@ export default {
 
 <style lang="scss" scoped>
 @import '~/assets/vars.scss';
-
-form {
+fieldset {
   display: flex;
   flex-direction: column;
   margin: 10px 0;
   padding: 10px;
   background-color: $bg-color;
-  border: 1px solid green;
+  border: 2px solid green;
 }
 
-input {
+select {
+  width: 100%;
   padding: 10px;
   margin: 5px 0 20px 0;
+  background-color: $main-color;
+  border-color: black;
+  color: white;
 }
 </style>
