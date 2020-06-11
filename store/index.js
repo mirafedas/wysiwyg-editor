@@ -1,9 +1,11 @@
+import { htmlToJson } from '../utils/html2json'
+
 export const state = () => ({
-  texts: []
+  texts: {}
 })
 
 export const mutations = {
   saveInJSON(state, newText) {
-    state.texts.push(newText)
+    state.texts = htmlToJson(newText)
   }
 }

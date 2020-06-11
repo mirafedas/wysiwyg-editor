@@ -1,16 +1,13 @@
 <template>
   <main>
     <div class="wrapper">
-      <TextSettings
-        @changeColor="changeColor"
-        @changeFontSize="changeFontSize"
-        @changeBgColor="changeBgColor"
-      />
+      <TextSettings @change="change" />
       <div
         ref="textarea"
         class="main-wrapper"
         contenteditable="true"
         spellcheck="false"
+        @blur="saveText"
       ></div>
       <pre class="main-wrapper">{{ texts }}</pre>
     </div>
@@ -28,28 +25,22 @@ export default {
   computed: {
     ...mapState(['texts'])
   },
+  mounted() {
+    this.$refs.textarea.innerHTML = localStorage.getItem('text')
+  },
   methods: {
     ...mapMutations(['saveInJSON']),
-    changeColor(color) {
-      if (color) {
-        document.execCommand('foreColor', false, color)
-        this.getJSON()
-      }
+    saveText() {
+      localStorage.setItem('text', this.$refs.textarea.innerHTML)
     },
-    changeFontSize(fontSize) {
-      if (fontSize) {
-        document.execCommand('fontSize', false, fontSize)
-        this.getJSON()
-      }
-    },
-    changeBgColor(bgColor) {
-      if (bgColor) {
-        document.execCommand('backColor', false, bgColor)
-        this.getJSON()
-      }
+    change(newProp) {
+      document.execCommand(newProp.type, false, newProp.val)
+      this.getJSON()
     },
     getJSON() {
-      this.saveInJSON(this.$refs.textarea.innerHTML)
+      const html = this.$refs.textarea
+      this.saveInJSON(html)
+      event.preventDefault()
     }
   }
 }
@@ -74,9 +65,10 @@ main {
 
 .wrapper {
   display: flex;
-  flex-wrap: wrap;
-  width: 100%;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
+  width: 100%;
 }
 
 pre {
