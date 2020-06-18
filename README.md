@@ -1,7 +1,8 @@
 # A Simple Text Editor
 
 > This is a simple text editor created using Vue.js/Nuxt.js.
-> Click "Add text" to add a text sample, and then click on text to open the settings.
+> Om master branch click "Add text" to add a text sample, and then click on text to open the settings.
+> Switch to the "second" branch to see the better version of the editor ;)
 
 ## Build Setup
 
